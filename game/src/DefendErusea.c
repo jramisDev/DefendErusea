@@ -24,10 +24,21 @@ int main(void){
     InitWindow(screenWidth, screenHeight, "raylib game template");
 
 
+    //Imamgenes de fondo
+    Texture2D farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
+    Texture2D midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
+    Texture2D forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
+
     while (!WindowShouldClose()) {
+
         BeginDrawing();
-        DrawCircle(100,100,50,BLUE);
+
+        DrawTexture(farBackGMountain, 0, 225, WHITE);
+        DrawTexture(midBackGMountain, 0, 225, WHITE);
+        DrawTexture(forBackGMountain, 0, 225, WHITE);
+
         ClearBackground(BLACK);
+
         EndDrawing();
 
     }
