@@ -72,6 +72,12 @@ int main(void){
     Texture2D midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
     Texture2D forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
 
+    //Nubes
+    Texture2D cloudOneBackGround = LoadTexture("resources/clouds/1.png");
+    Texture2D cloudTwoBackGround = LoadTexture("resources/clouds/2.png");
+    Texture2D cloudThreeBackGround = LoadTexture("resources/clouds/3.png");
+
+
     //Imagenes avión
     Texture2D greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
     Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
@@ -111,10 +117,7 @@ int main(void){
         //    break;
         //}
 
-
         //Comenzamos...
-
-
         BeginDrawing();
 
         ClearBackground(BLACK);
@@ -159,7 +162,6 @@ int main(void){
 
 
         //BackGround
-
        scrollingBack -= 0.2f;
        scrollingMid -= 1.0f;
        scrollingFore -= 2.0f;
@@ -174,6 +176,8 @@ int main(void){
         DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
         DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
 
+
+        //Movimiento de avion
         if (IsKeyDown(KEY_A)) {
             if(currentPosition.x >= 2) currentPosition.x = currentPosition.x - 2;
         }
@@ -209,6 +213,6 @@ int main(void){
     return 0;
 }
 
-void setbackground() {
-    int x = 0;
-}
+//void setbackground() {
+//    int x = 0;
+//}
