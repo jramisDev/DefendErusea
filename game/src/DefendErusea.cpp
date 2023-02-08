@@ -14,6 +14,7 @@
 
 #include "raylib.h"
 #include "screens.h"
+#include <iostream>
 
 static const int SCREEN_WIDTH = 800;
 static const int SCREEN_HEIGHT = 450;
@@ -21,40 +22,40 @@ static const char* GAME_TITLE = "Defend Erusea";
 
 static const int SKY_WIDTH = 14;
 
-enum ScreenGames { HOME, CONTROLS, GAME, END, GAMEOVER };
+//enum ScreenGames { HOME, CONTROLS, GAME, END, GAMEOVER };
 
 
-class Ship {
+//class Ship {
+//
+//    short currentSpeed;
+//    Texture2D img;
+//    Vector2 currentPos;
+//
+//public:
+//    Ship() {
+//        currentSpeed = 10;
+//        currentPos.x = 100;
+//        currentPos.y = 100;
+//    };
+//
+//    short getCurrentSpeed() { return currentSpeed; };
+//    void setCurrentSpeed(short pCurrentSpeed) { currentSpeed = pCurrentSpeed; };
+//
+//    Texture2D getImg() { return img; };
+//
+//    Vector2 getCurrentPosition() { return currentPos; };
+//
+//    void Move(Vector2 delta) {
+//        currentPos.x = currentPos.x + (delta.x * currentSpeed);
+//        currentPos.y = currentPos.y + (delta.y * currentSpeed);
+//    }
+//
+//    ~Ship() {}
+//};
 
-    short currentSpeed;
-    Texture2D img;
-    Vector2 currentPos;
-
-public:
-    Ship() {
-        currentSpeed = 10;
-        currentPos.x = 100;
-        currentPos.y = 100;
-    };
-
-    short getCurrentSpeed() { return currentSpeed; };
-    void setCurrentSpeed(short pCurrentSpeed) { currentSpeed = pCurrentSpeed; };
-
-    Texture2D getImg() { return img; };
-
-    Vector2 getCurrentPosition() { return currentPos; };
-
-    void Move(Vector2 delta) {
-        currentPos.x = currentPos.x + (delta.x * currentSpeed);
-        currentPos.y = currentPos.y + (delta.y * currentSpeed);
-    }
-
-    ~Ship() {}
-};
-
-bool executeGame() {
-    return false;
-}
+//bool executeGame() {
+//    return false;
+//}
 
 
 int main(void){
@@ -63,52 +64,52 @@ int main(void){
     int framesCounter = 0;
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE);
 
-    ScreenGames screenGames = HOME;
+    //ScreenGames screenGames = HOME;
 
-    ////Imagenes de fondo
-    //Texture2D skyBackGMountain = LoadTexture("resources/background/sky_color.png");
-    //Texture2D farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
-    //Texture2D midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
-    //Texture2D forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
+    //Imagenes de fondo
+    Texture2D skyBackGMountain = LoadTexture("resources/background/sky_color.png");
+    Texture2D farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
+    Texture2D midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
+    Texture2D forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
 
-    ////Imagenes avión
-    //Texture2D greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
-    //Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
-    //Texture2D redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
+    //Imagenes avión
+    Texture2D greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
+    Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
+    Texture2D redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
 
-    //float scrollingBack = 0.0f;
-    //float scrollingMid = 0.0f;
-    //float scrollingFore = 0.0f;
+    float scrollingBack = 0.0f;
+    float scrollingMid = 0.0f;
+    float scrollingFore = 0.0f;
 
-    //Vector2 currentPosition;
-    //currentPosition.x = 100;
-    //currentPosition.y = 100;
+    Vector2 currentPosition;
+    currentPosition.x = 100;
+    currentPosition.y = 100;
 
     while (!WindowShouldClose()) {
 
         //Gestion de seleccion de pantallas
-        switch (screenGames) {
-        case HOME:
-            if (IsKeyPressed(KEY_ENTER)) screenGames = CONTROLS;
-            break;
-        case CONTROLS:
-            if (IsKeyPressed(KEY_ENTER)) screenGames = GAME;
-            break;
-        case GAME:
-            //En esta pantalla no hay acciones directas, depende del juego
-            break;
-        case END:
-            if (IsKeyPressed(KEY_ENTER)) screenGames = HOME;
-            if (IsKeyPressed(KEY_SPACE)) CloseWindow();
-            break;
-        case GAMEOVER:
-            if (IsKeyPressed(KEY_ENTER)) screenGames = HOME;
-            if (IsKeyPressed(KEY_SPACE)) CloseWindow();
-            break;
-        default: 
-            screenGames = HOME;
-            break;
-        }
+        //switch (screenGames) {
+        //case HOME:
+        //    if (IsKeyPressed(KEY_ENTER)) screenGames = CONTROLS;
+        //    break;
+        //case CONTROLS:
+        //    if (IsKeyPressed(KEY_ENTER)) screenGames = GAME;
+        //    break;
+        //case GAME:
+        //    //En esta pantalla no hay acciones directas, depende del juego
+        //    break;
+        //case END:
+        //    if (IsKeyPressed(KEY_ENTER)) screenGames = HOME;
+        //    if (IsKeyPressed(KEY_SPACE)) CloseWindow();
+        //    break;
+        //case GAMEOVER:
+        //    if (IsKeyPressed(KEY_ENTER)) screenGames = HOME;
+        //    if (IsKeyPressed(KEY_SPACE)) CloseWindow();
+        //    break;
+        //default: 
+        //    screenGames = HOME;
+        //    break;
+        //}
 
 
         //Comenzamos...
@@ -118,7 +119,7 @@ int main(void){
 
         ClearBackground(BLACK);
         
-        switch (screenGames) {
+      /*  switch (screenGames) {
         case HOME: {
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, BLUE);
             DrawText("Defend Erusea", SCREEN_WIDTH/4, (SCREEN_HEIGHT/2)-50, 40, RED);
@@ -152,52 +153,55 @@ int main(void){
         default:
             screenGames = HOME;
             break;
-        }
+        }*/
 
 
 
 
         //BackGround
 
-       /*scrollingBack -= 0.2f;
+       scrollingBack -= 0.2f;
        scrollingMid -= 1.0f;
        scrollingFore -= 2.0f;
 
        if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
        if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
-       if (scrollingFore <= -forBackGMountain.width * 2) scrollingFore = 0;*/
+       if (scrollingFore <= -forBackGMountain.width * 2) scrollingFore = 0;
 
+        for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH)+1; i++) DrawTexture(skyBackGMountain, 0+(i* SKY_WIDTH), 0, WHITE);
 
+        DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
+        DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
+        DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
 
-       /* for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH)+1; i++) DrawTexture(skyBackGMountain, 0+(i* SKY_WIDTH), 0, WHITE);
+        if (IsKeyDown(KEY_A)) {
+            if(currentPosition.x >= 2) currentPosition.x = currentPosition.x - 2;
+        }
+        if (IsKeyDown(KEY_D)) {
+            if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + 2;
+        }
+        if (IsKeyDown(KEY_W)) {
+            if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - 2;
+        }
+        if (IsKeyDown(KEY_S)) {
+            if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + 2;
+        }
 
-        DrawTextureEx(farBackGMountain, (Vector2) { scrollingBack, 125 }, 0.0f, 1.0f, WHITE);
-        DrawTextureEx(midBackGMountain, (Vector2) { scrollingBack, 330 }, 0.0f, 1.0f, WHITE);
-        DrawTextureEx(forBackGMountain, (Vector2) { scrollingBack, 400 }, 0.0f, 1.0f, WHITE);
-
-
- 
-
-        if (IsKeyDown(KEY_A)) currentPosition.x = currentPosition.x-2;
-        if (IsKeyDown(KEY_D)) currentPosition.x = currentPosition.x+2;
-        if (IsKeyDown(KEY_W)) currentPosition.y = currentPosition.y -2;
-        if (IsKeyDown(KEY_S)) currentPosition.y = currentPosition.y+2;
-
-        DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);*/
+        DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);
 
 
         EndDrawing();
 
     }
 
-  /*  UnloadTexture(skyBackGMountain);
+    UnloadTexture(skyBackGMountain);
     UnloadTexture(farBackGMountain);
     UnloadTexture(midBackGMountain);
     UnloadTexture(forBackGMountain);
 
     UnloadTexture(greenPlane);
     UnloadTexture(yellowPlane);
-    UnloadTexture(redPlane);*/
+    UnloadTexture(redPlane);
 
 
     CloseWindow();
