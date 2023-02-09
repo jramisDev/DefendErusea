@@ -1,4 +1,3 @@
-
 #include "raylib.h"
 #include "screens.h"
 #include <iostream>
@@ -15,10 +14,7 @@ int main() {
 
     SetTargetFPS(60);
 
-    float playerX = SCREEN_WIDTH / 1.0f;
-    float playerY = SCREEN_HEIGHT - 45.0f;
-    float playerSpeed = 5.0f;
-
+    //Background
     int backgroundX = 0;
     Texture2D skyBackGMountain = LoadTexture("resources/background/sky_color.png");
     Texture2D farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
@@ -35,7 +31,7 @@ int main() {
     Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
     Texture2D redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
 
-
+    //MovimientoBackground
     float scrollingBack = 0.0f;
     float scrollingMid = 0.0f;
     float scrollingFore = 0.0f;
