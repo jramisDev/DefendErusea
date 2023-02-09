@@ -79,8 +79,7 @@ Texture2D yellowPlane;
 Texture2D redPlane;
 
 //Enemigos
-Texture2D bombMoveL;
-Texture2D bombMoveR;
+Texture2D bombMove;
 Texture2D bombStatic;
 
 Texture2D explosion;
@@ -124,8 +123,7 @@ void initApp() {
     redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
 
     //Enemigos
-    bombMoveL = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
-    bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
+    bombMove = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
     bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
 
     explosion = LoadTexture("resources/explosion_effect/spritesheet/explosion.png");
@@ -149,8 +147,7 @@ void endApp() {
     UnloadTexture(yellowPlane);
     UnloadTexture(redPlane);
 
-    UnloadTexture(bombMoveL);
-    UnloadTexture(bombMoveR);
+    UnloadTexture(bombMove);
     UnloadTexture(bombStatic);
 
     UnloadSound(damagedSound);
@@ -278,7 +275,7 @@ int main() {
         DrawTextureEx(bombStatic, { enemy1.x-20, enemy1.y-15 }, 0.0f, 0.2f, WHITE);
 
         //DrawRectangleRec(enemy2, WHITE);
-        DrawTextureEx(bombMoveL, { enemy2.x-5, enemy2.y }, 0.0f, 0.2f, WHITE);
+        DrawTextureEx(bombMove, { enemy2.x-5, enemy2.y }, 0.0f, 0.2f, WHITE);
         //Fin enemigos
 
         //Generamos el nuestro avion
