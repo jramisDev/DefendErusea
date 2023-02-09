@@ -2,6 +2,28 @@
 #include "screens.h"
 #include <iostream>
 
+//FPS
+#define FPS 60
+
+//Explosion
+#define NUM_FRAMES_PER_LINE 3
+#define NUM_LINES 3
+
+//WindowScreen
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 450
+#define GAME_TITLE "Defend Erusea"
+
+#define SKY_WIDTH 14
+
+
+//Widget Health
+#define WIDGET_POS_X 10
+#define WIDGET_POS_Y 10
+#define WIDGET_HEIGHT 20
+#define WIDGET_WIDTH 100
+
+
 class Ship {
 
     short speed;
@@ -40,12 +62,6 @@ public:
     }
 };
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 450;
-static const char* GAME_TITLE = "Defend Erusea";
-
-static const int SKY_WIDTH = 14;
-
 //Background
 Texture2D skyBackGMountain;
 Texture2D farBackGMountain;
@@ -67,6 +83,8 @@ Texture2D bombMoveL;
 Texture2D bombMoveR;
 Texture2D bombStatic;
 
+Texture2D explosion;
+
 //Sonidos
 Sound damagedSound;
 Sound diedSound;
@@ -84,9 +102,6 @@ Rectangle enemy2 = { 600, 100, 90, 35 };
 
 //Velocidad enemigo
 float enemy2Speed = 2.0f;
-
-//Nuestra vida
-int playerHealth = 100;
 
 void initApp() {
 
@@ -113,7 +128,9 @@ void initApp() {
     bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
     bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
 
-    SetTargetFPS(60);
+    explosion = LoadTexture("resources/explosion_effect/spritesheet/explosion.png");
+
+    SetTargetFPS(FPS);
 
     InitAudioDevice();
 
@@ -148,17 +165,22 @@ void endApp() {
 void generateWidgetHealth(short pPlayerHealth) {
 
     //Generamos barra de salud
+    DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, WIDGET_WIDTH, WIDGET_HEIGHT, BLACK);
     if (pPlayerHealth > 50)
-        DrawRectangle(10, 10, pPlayerHealth, 20, GREEN);
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, GREEN);
     else if (pPlayerHealth > 20 && pPlayerHealth < 50)
-        DrawRectangle(10, 10, pPlayerHealth, 20, YELLOW);
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, YELLOW);
     else
-        DrawRectangle(10, 10, pPlayerHealth, 20, RED);
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, RED);
 }
 
 int main() {
     
     Ship playerPlane;
+    Ship enemyOne;
+    enemyOne.setPowerFire(1);
+    Ship enemyTwo;
+    enemyTwo.setPowerFire(2);
     
     initApp();
 
@@ -169,9 +191,9 @@ int main() {
         ClearBackground(BLACK);
 
         //BackGround movimiento
-        scrollingBack -= 10;
-        scrollingMid -= 10;
-        scrollingFore -= 10;
+        scrollingBack -= 1;
+        scrollingMid -= 1;
+        scrollingFore -= 1;
 
         if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
         if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
@@ -214,13 +236,22 @@ int main() {
         Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
         //DrawRectangleRec(playerRect, WHITE);
 
-        if (CheckCollisionRecs(playerRect, enemy1) || CheckCollisionRecs(playerRect, enemy2)) {
-            playerPlane.setHealth(1);
+        if (CheckCollisionRecs(playerRect, enemy1)) {
+            playerPlane.setHealth(enemyOne.getPowerFire());
             
             if(!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)){
                 playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
             }
             
+        }
+
+        if (CheckCollisionRecs(playerRect, enemy2)) {
+            playerPlane.setHealth(enemyTwo.getPowerFire());
+
+            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+            }
+
         }
         //FIN Colision player - enemigo
 
