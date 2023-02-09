@@ -30,9 +30,21 @@ Texture2D bombMoveR;
 Texture2D bombStatic;
 
 //MovimientoBackground
-unsigned int scrollingBack = 0;
-unsigned int scrollingMid = 0;
-unsigned int scrollingFore = 0;
+int scrollingBack = 0;
+int scrollingMid = 0;
+int scrollingFore = 0;
+
+//Posiciones
+Vector2 currentPosition = { 100, 150 };
+
+Rectangle enemy1 = { 400, 250, 60, 15 };
+Rectangle enemy2 = { 400, 100, 90, 35 };
+
+//Velocidad enemigo
+float enemy2Speed = 2.0f;
+
+//Nuestra vida
+int playerHealth = 100;
 
 void init() {
 
@@ -59,6 +71,7 @@ void init() {
 }
 
 void end() {
+
     UnloadTexture(skyBackGMountain);
     UnloadTexture(farBackGMountain);
     UnloadTexture(midBackGMountain);
@@ -71,6 +84,7 @@ void end() {
     UnloadTexture(bombMoveL);
     UnloadTexture(bombMoveR);
     UnloadTexture(bombStatic);
+
 }
 
 void generateWidgetHealth(int pPlayerHealth) {
@@ -91,16 +105,6 @@ int main() {
     SetTargetFPS(60);
 
     init();
-    
-    Vector2 currentPosition;
-    currentPosition.x = 100;
-    currentPosition.y = 150;
-
-    int playerHealth = 100;
-
-    Rectangle enemy1 = { 400, 250, 60, 15 };
-    Rectangle enemy2 = { 400, 100, 90, 35 };
-    float enemy2Speed = 2.0f;
 
     while (!WindowShouldClose()) {
 
