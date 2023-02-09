@@ -226,31 +226,6 @@ void setMovementEnemy() {
     if (enemy2.y <= 0) enemy2Speed *= -1;
 }
 
-void setCollisions(Ship pPlayerPlane, Ship pEnemyOne, Ship pEnemyTwo) {
-    //Colision player - enemigo
-    Rectangle playerRect = { currentPosition.x, currentPosition.y + 20, 100, 30 };
-    //DrawRectangleRec(playerRect, WHITE);
-
-    if (CheckCollisionRecs(playerRect, enemy1)) {
-        pPlayerPlane.setHealth(pEnemyOne.getPowerFire());
-
-        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-            pPlayerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-        }
-
-    }
-
-    if (CheckCollisionRecs(playerRect, enemy2)) {
-        pPlayerPlane.setHealth(pEnemyTwo.getPowerFire());
-
-        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-            pPlayerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-        }
-
-    }
-    //FIN Colision player - enemigo
-}
-
 int main() {
     
     Ship playerPlane;
@@ -272,8 +247,32 @@ int main() {
         setMovementPlayer(playerPlane);
 
         setMovementEnemy();
+              
+        
 
-        setCollisions(playerPlane, enemyOne, enemyTwo);
+        //Colision player - enemigo
+        Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
+        //DrawRectangleRec(playerRect, WHITE);
+
+        if (CheckCollisionRecs(playerRect, enemy1)) {
+            playerPlane.setHealth(enemyOne.getPowerFire());
+            
+            if(!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)){
+                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+            }
+            
+        }
+
+        if (CheckCollisionRecs(playerRect, enemy2)) {
+            playerPlane.setHealth(enemyTwo.getPowerFire());
+
+            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+            }
+
+        }
+        //FIN Colision player - enemigo
+
 
         //DrawRectangleRec(enemy1, WHITE);
         DrawTextureEx(bombStatic, { enemy1.x-20, enemy1.y-15 }, 0.0f, 0.2f, WHITE);
