@@ -34,7 +34,7 @@ class Ship {
 
 public:
     Ship() {
-        speed = 1;
+        speed = 3;
         health = 100;
         powerFire = 1;
         currentPos.x = 100;
@@ -198,6 +198,59 @@ void setBackground(void) {
     //Fin background
 }
 
+void setMovementPlayer(Ship pPlayerPlane) {
+
+    Vector2 movement = { 0,0 };
+
+    //Movimiento de avion
+    if (IsKeyDown(KEY_A)) {
+        if (currentPosition.x >= 2) currentPosition.x = currentPosition.x - pPlayerPlane.getSpeed();
+    }
+    if (IsKeyDown(KEY_D)) {
+        if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + pPlayerPlane.getSpeed();
+    }
+    if (IsKeyDown(KEY_W)) {
+        if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - pPlayerPlane.getSpeed();
+    }
+    if (IsKeyDown(KEY_S)) {
+        if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + pPlayerPlane.getSpeed();
+    }
+
+    //Fin Movimiento de avion
+}
+
+void setMovementEnemy() {
+    //Enemigos estatico y movible
+    enemy2.y += enemy2Speed;
+    if (enemy2.y >= SCREEN_HEIGHT - enemy2.width) enemy2Speed *= -1;
+    if (enemy2.y <= 0) enemy2Speed *= -1;
+}
+
+void setCollisions(Ship pPlayerPlane, Ship pEnemyOne, Ship pEnemyTwo) {
+    //Colision player - enemigo
+    Rectangle playerRect = { currentPosition.x, currentPosition.y + 20, 100, 30 };
+    //DrawRectangleRec(playerRect, WHITE);
+
+    if (CheckCollisionRecs(playerRect, enemy1)) {
+        pPlayerPlane.setHealth(pEnemyOne.getPowerFire());
+
+        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+            pPlayerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+        }
+
+    }
+
+    if (CheckCollisionRecs(playerRect, enemy2)) {
+        pPlayerPlane.setHealth(pEnemyTwo.getPowerFire());
+
+        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+            pPlayerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+        }
+
+    }
+    //FIN Colision player - enemigo
+}
+
 int main() {
     
     Ship playerPlane;
@@ -214,52 +267,13 @@ int main() {
 
         ClearBackground(BLACK);
 
-        //Ponemos el fondo
         setBackground();
-                
-        //Movimiento de avion
-        if (IsKeyDown(KEY_A)) {
-            if (currentPosition.x >= 2) currentPosition.x = currentPosition.x - 3;
-        }
-        if (IsKeyDown(KEY_D)) {
-            if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + 3;
-        }
-        if (IsKeyDown(KEY_W)) {
-            if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - 3;
-        }
-        if (IsKeyDown(KEY_S)) {
-            if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + 3;
-        }
-        //Fin Movimiento de avion
-              
-        //Enemigos estatico y movible
-        enemy2.y += enemy2Speed;
-        if (enemy2.y >= SCREEN_HEIGHT - enemy2.width) enemy2Speed *= -1;
-        if (enemy2.y <= 0) enemy2Speed *= -1;
 
-        //Colision player - enemigo
-        Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
-        //DrawRectangleRec(playerRect, WHITE);
+        setMovementPlayer(playerPlane);
 
-        if (CheckCollisionRecs(playerRect, enemy1)) {
-            playerPlane.setHealth(enemyOne.getPowerFire());
-            
-            if(!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)){
-                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-            }
-            
-        }
+        setMovementEnemy();
 
-        if (CheckCollisionRecs(playerRect, enemy2)) {
-            playerPlane.setHealth(enemyTwo.getPowerFire());
-
-            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-            }
-
-        }
-        //FIN Colision player - enemigo
-
+        setCollisions(playerPlane, enemyOne, enemyTwo);
 
         //DrawRectangleRec(enemy1, WHITE);
         DrawTextureEx(bombStatic, { enemy1.x-20, enemy1.y-15 }, 0.0f, 0.2f, WHITE);
@@ -268,13 +282,10 @@ int main() {
         DrawTextureEx(bombMoveL, { enemy2.x-5, enemy2.y }, 0.0f, 0.2f, WHITE);
         //Fin enemigos
 
-
         //Generamos el nuestro avion
         DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);
 
-
         generateWidgetHealth(playerPlane.getHealth());
-
 
         EndDrawing();
     }
