@@ -174,6 +174,30 @@ void generateWidgetHealth(short pPlayerHealth) {
         DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, RED);
 }
 
+void setBackground(void) {
+
+    //BackGround movimiento
+    scrollingBack -= 1;
+    scrollingMid -= 1;
+    scrollingFore -= 1;
+
+    if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
+    if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
+    if (scrollingFore <= -forBackGMountain.width * 2) scrollingFore = 0;
+
+    for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
+
+    DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
+    DrawTexture(farBackGMountain, scrollingBack + skyBackGMountain.width, 125, WHITE);
+
+    DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
+    DrawTexture(midBackGMountain, scrollingBack + skyBackGMountain.width, 330, WHITE);
+
+    DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
+    DrawTexture(forBackGMountain, scrollingBack + skyBackGMountain.width, 400, WHITE);
+    //Fin background
+}
+
 int main() {
     
     Ship playerPlane;
@@ -190,28 +214,9 @@ int main() {
 
         ClearBackground(BLACK);
 
-        //BackGround movimiento
-        scrollingBack -= 1;
-        scrollingMid -= 1;
-        scrollingFore -= 1;
-
-        if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
-        if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
-        if (scrollingFore <= -forBackGMountain.width * 2) scrollingFore = 0;
-
-        for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
-
-        DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
-        DrawTexture(farBackGMountain, scrollingBack + skyBackGMountain.width, 125, WHITE);
-
-        DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
-        DrawTexture(midBackGMountain, scrollingBack + skyBackGMountain.width, 330, WHITE);
-         
-        DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
-        DrawTexture(forBackGMountain, scrollingBack + skyBackGMountain.width, 400, WHITE);
-        //Fin background
-
-
+        //Ponemos el fondo
+        setBackground();
+                
         //Movimiento de avion
         if (IsKeyDown(KEY_A)) {
             if (currentPosition.x >= 2) currentPosition.x = currentPosition.x - 3;
