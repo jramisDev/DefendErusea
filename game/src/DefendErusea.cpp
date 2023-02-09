@@ -283,6 +283,15 @@ int main() {
 
         generateWidgetHealth(playerPlane.getHealth());
 
+        int level = 1;
+        int maxLevel = 800;
+
+        int progress = (level * playerPlane.getCurrentPosition().x) / maxLevel;
+
+        std::cout << "\n\n\n\n Progresion Nivel: " << progress << "PosicionX: " << playerPlane.getCurrentPosition().x  << "\n\n\n\n\n";
+
+        DrawRectangle(0, SCREEN_HEIGHT-5, currentPosition.x+100, 5, BLACK);
+
         EndDrawing();
     }
 
