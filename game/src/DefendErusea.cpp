@@ -47,8 +47,8 @@ int main() {
 
     int playerHealth = 100;
 
-    Rectangle enemy1 = { 400, 250, 80, 45 };
-    Rectangle enemy2 = { 400, 100, 100, 35 };
+    Rectangle enemy1 = { 400, 250, 60, 15 };
+    Rectangle enemy2 = { 400, 100, 90, 35 };
     float enemy2Speed = 2.0f;
 
     while (!WindowShouldClose()) {
@@ -100,7 +100,8 @@ int main() {
         if (enemy2.x <= 0) enemy2Speed *= -1;
 
         //Colision player - enemigo
-        Rectangle playerRect = { currentPosition.x - 20, currentPosition.y - 20, 40, 40 };
+        Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
+        //DrawRectangleRec(playerRect, WHITE);
 
         if (CheckCollisionRecs(playerRect, enemy1)) {
             playerHealth -= 1;
@@ -112,11 +113,11 @@ int main() {
         //FIN Colision player - enemigo
 
 
-        DrawRectangleRec(enemy1, WHITE);
-        DrawTextureEx(bombStatic, { enemy1.x, enemy1.y }, 0.0f, 0.2f, WHITE);
+        //DrawRectangleRec(enemy1, WHITE);
+        DrawTextureEx(bombStatic, { enemy1.x-20, enemy1.y-15 }, 0.0f, 0.2f, WHITE);
 
-        DrawRectangleRec(enemy2, WHITE);
-        DrawTextureEx(bombMoveL, { enemy2.x, enemy2.y }, 0.0f, 0.2f, WHITE);
+        //DrawRectangleRec(enemy2, WHITE);
+        DrawTextureEx(bombMoveL, { enemy2.x-5, enemy2.y }, 0.0f, 0.2f, WHITE);
         //Fin enemigos
 
 
