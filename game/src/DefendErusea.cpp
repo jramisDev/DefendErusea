@@ -29,6 +29,10 @@ Texture2D bombMoveL;
 Texture2D bombMoveR;
 Texture2D bombStatic;
 
+//Sonidos
+Sound damagedSound;
+Sound diedSound;
+
 //MovimientoBackground
 int scrollingBack = 0;
 int scrollingMid = 0;
@@ -47,6 +51,8 @@ float enemy2Speed = 2.0f;
 int playerHealth = 100;
 
 void initApp() {
+
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE);
 
     //Background
     skyBackGMountain = LoadTexture("resources/background/sky_color.png");
@@ -68,6 +74,13 @@ void initApp() {
     bombMoveL = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
     bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
     bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
+
+    SetTargetFPS(60);
+
+    InitAudioDevice();
+
+    damagedSound = LoadSound("resources/sound.wav");
+    diedSound = LoadSound("resources/sound.wav");
 }
 
 void endApp() {
@@ -85,6 +98,13 @@ void endApp() {
     UnloadTexture(bombMoveR);
     UnloadTexture(bombStatic);
 
+    UnloadSound(damagedSound);
+    UnloadSound(diedSound);
+
+    CloseAudioDevice();
+
+    CloseWindow();
+
 }
 
 void generateWidgetHealth(int pPlayerHealth) {
@@ -100,10 +120,8 @@ void generateWidgetHealth(int pPlayerHealth) {
 
 int main() {
     
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE);
-
-    SetTargetFPS(60);
-
+    
+    
     initApp();
 
     while (!WindowShouldClose()) {
@@ -158,12 +176,10 @@ int main() {
         Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
         //DrawRectangleRec(playerRect, WHITE);
 
-        if (CheckCollisionRecs(playerRect, enemy1)) {
+        if (CheckCollisionRecs(playerRect, enemy1) || CheckCollisionRecs(playerRect, enemy2)) {
             playerHealth -= 1;
-        }
-
-        if (CheckCollisionRecs(playerRect, enemy2)) {
-            playerHealth -= 1;
+            
+            playerHealth <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
         }
         //FIN Colision player - enemigo
 
@@ -187,8 +203,6 @@ int main() {
     }
 
     endApp();
-
-    CloseWindow();
 
     return 0;
 }
