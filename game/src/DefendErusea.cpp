@@ -89,15 +89,17 @@ int main() {
         if (enemy2.x >= SCREEN_WIDTH - enemy2.width) enemy2Speed *= -1;
         if (enemy2.x <= 0) enemy2Speed *= -1;
 
-        Rectangle playerRect = { playerX - 20, playerY - 20, 40, 40 };
+        //Colision player - enemigo
+        Rectangle playerRect = { currentPosition.x - 20, currentPosition.y - 20, 40, 40 };
 
         if (CheckCollisionRecs(playerRect, enemy1)) {
-            playerHealth -= 10;
+            playerHealth -= 1;
         }
 
         if (CheckCollisionRecs(playerRect, enemy2)) {
-            playerHealth -= 10;
+            playerHealth -= 1;
         }
+        //FIN Colision player - enemigo
 
         DrawRectangleRec(enemy1, RED);
         DrawRectangleRec(enemy2, RED);
@@ -108,7 +110,12 @@ int main() {
         DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);
 
         //Generamos barra de salud
-        DrawRectangle(10, 10, playerHealth, 20, GREEN);
+        if(playerHealth > 50)
+            DrawRectangle(10, 10, playerHealth, 20, GREEN);
+        else if (playerHealth > 20 && playerHealth < 50)
+            DrawRectangle(10, 10, playerHealth, 20, YELLOW);
+        else
+            DrawRectangle(10, 10, playerHealth, 20, RED);
 
         EndDrawing();
     }
