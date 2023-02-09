@@ -37,7 +37,7 @@ public:
         speed = 3;
         health = 100;
         powerFire = 1;
-        currentPos.x = 100;
+        currentPos.x = 0;
         currentPos.y = 150;
     };
 
@@ -94,7 +94,7 @@ int scrollingMid = 0;
 int scrollingFore = 0;
 
 //Posiciones
-Vector2 currentPosition = { 100, 150 };
+Vector2 currentPosition = { 0, 150 };
 
 Rectangle enemy1 = { 450, 250, 60, 15 };
 Rectangle enemy2 = { 600, 100, 90, 35 };
@@ -223,6 +223,10 @@ void setMovementEnemy() {
     if (enemy2.y <= 0) enemy2Speed *= -1;
 }
 
+void setGenerateProgressionBar() {
+    DrawRectangle(0, SCREEN_HEIGHT - 5, currentPosition.x + 100, 5, BLACK);
+}
+
 int main() {
     
     Ship playerPlane;
@@ -233,7 +237,13 @@ int main() {
     
     initApp();
 
+    int framesCounter = 0;
+    bool inicio = true;
+
+
     while (!WindowShouldClose()) {
+
+        framesCounter++;
 
         BeginDrawing();
 
@@ -247,28 +257,36 @@ int main() {
               
         
 
-        //Colision player - enemigo
-        Rectangle playerRect = { currentPosition.x, currentPosition.y+20, 100, 30 };
-        //DrawRectangleRec(playerRect, WHITE);
+        
+        //Controlamos que nos de un margen de tiempo tras impactos
+        if (inicio || framesCounter >= FPS) {
 
-        if (CheckCollisionRecs(playerRect, enemy1)) {
-            playerPlane.setHealth(enemyOne.getPowerFire());
-            
-            if(!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)){
-                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-            }
-            
-        }
+            //Colision player - enemigo
+            Rectangle playerRect = { currentPosition.x, currentPosition.y + 20, 100, 30 };
+            //DrawRectangleRec(playerRect, WHITE);
 
-        if (CheckCollisionRecs(playerRect, enemy2)) {
-            playerPlane.setHealth(enemyTwo.getPowerFire());
 
-            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-                playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+            if (CheckCollisionRecs(playerRect, enemy1)) {
+                playerPlane.setHealth(enemyOne.getPowerFire());
+
+                if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                    playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+                }
+
             }
 
+            if (CheckCollisionRecs(playerRect, enemy2)) {
+                playerPlane.setHealth(enemyTwo.getPowerFire());
+
+                if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                    playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+                }
+
+            }
+            //FIN Colision player - enemigo
+            framesCounter = 0;
+            inicio = false;
         }
-        //FIN Colision player - enemigo
 
 
         //DrawRectangleRec(enemy1, WHITE);
@@ -283,14 +301,8 @@ int main() {
 
         generateWidgetHealth(playerPlane.getHealth());
 
-        int level = 1;
-        int maxLevel = 800;
-
-        int progress = (level * playerPlane.getCurrentPosition().x) / maxLevel;
-
-        std::cout << "\n\n\n\n Progresion Nivel: " << progress << "PosicionX: " << playerPlane.getCurrentPosition().x  << "\n\n\n\n\n";
-
-        DrawRectangle(0, SCREEN_HEIGHT-5, currentPosition.x+100, 5, BLACK);
+        setGenerateProgressionBar();
+        
 
         EndDrawing();
     }
