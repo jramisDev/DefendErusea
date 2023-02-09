@@ -8,6 +8,21 @@ static const char* GAME_TITLE = "Defend Erusea";
 
 static const int SKY_WIDTH = 14;
 
+
+
+
+void generateWidgetHealth(int pPlayerHealth) {
+
+    //Generamos barra de salud
+    if (pPlayerHealth > 50)
+        DrawRectangle(10, 10, pPlayerHealth, 20, GREEN);
+    else if (pPlayerHealth > 20 && pPlayerHealth < 50)
+        DrawRectangle(10, 10, pPlayerHealth, 20, YELLOW);
+    else
+        DrawRectangle(10, 10, pPlayerHealth, 20, RED);
+}
+
+
 int main() {
     
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE);
@@ -124,13 +139,9 @@ int main() {
         //Generamos el nuestro avion
         DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);
 
-        //Generamos barra de salud
-        if(playerHealth > 50)
-            DrawRectangle(10, 10, playerHealth, 20, GREEN);
-        else if (playerHealth > 20 && playerHealth < 50)
-            DrawRectangle(10, 10, playerHealth, 20, YELLOW);
-        else
-            DrawRectangle(10, 10, playerHealth, 20, RED);
+
+        generateWidgetHealth(playerHealth);
+
 
         EndDrawing();
     }
