@@ -179,16 +179,16 @@ int main(void){
 
         //Movimiento de avion
         if (IsKeyDown(KEY_A)) {
-            if(currentPosition.x >= 2) currentPosition.x = currentPosition.x - 2;
+            if(currentPosition.x >= 2) currentPosition.x = currentPosition.x - 3;
         }
         if (IsKeyDown(KEY_D)) {
-            if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + 2;
+            if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + 3;
         }
         if (IsKeyDown(KEY_W)) {
-            if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - 2;
+            if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - 3;
         }
         if (IsKeyDown(KEY_S)) {
-            if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + 2;
+            if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + 3;
         }
 
         DrawTextureEx(greenPlane, currentPosition, 0.0f, 0.1f, WHITE);
