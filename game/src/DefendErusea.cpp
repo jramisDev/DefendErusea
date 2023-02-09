@@ -31,6 +31,11 @@ int main() {
     Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
     Texture2D redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
 
+    //Enemigos
+    Texture2D bombMoveL = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
+    Texture2D bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
+    Texture2D bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
+
     //MovimientoBackground
     float scrollingBack = 0.0f;
     float scrollingMid = 0.0f;
@@ -38,12 +43,12 @@ int main() {
 
     Vector2 currentPosition;
     currentPosition.x = 100;
-    currentPosition.y = 100;
+    currentPosition.y = 150;
 
     int playerHealth = 100;
 
-    Rectangle enemy1 = { 400, 350, 50, 50 };
-    Rectangle enemy2 = { 0, 300, 50, 50 };
+    Rectangle enemy1 = { 400, 250, 80, 45 };
+    Rectangle enemy2 = { 400, 100, 100, 35 };
     float enemy2Speed = 2.0f;
 
     while (!WindowShouldClose()) {
@@ -53,9 +58,9 @@ int main() {
         ClearBackground(BLACK);
 
         //BackGround movimiento
-        scrollingBack -= 0.2f;
-        scrollingMid -= 1.0f;
-        scrollingFore -= 2.0f;
+        scrollingBack -= 10.2f;
+        scrollingMid -= 10.0f;
+        scrollingFore -= 10.0f;
 
         if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
         if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
@@ -64,8 +69,13 @@ int main() {
         for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
 
         DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
+        DrawTexture(farBackGMountain, scrollingBack + skyBackGMountain.width, 125, WHITE);
+
         DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
+        DrawTexture(midBackGMountain, scrollingBack + skyBackGMountain.width, 330, WHITE);
+         
         DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
+        DrawTexture(forBackGMountain, scrollingBack + skyBackGMountain.width, 400, WHITE);
         //Fin background
 
 
@@ -101,8 +111,12 @@ int main() {
         }
         //FIN Colision player - enemigo
 
-        DrawRectangleRec(enemy1, RED);
-        DrawRectangleRec(enemy2, RED);
+
+        DrawRectangleRec(enemy1, WHITE);
+        DrawTextureEx(bombStatic, { enemy1.x, enemy1.y }, 0.0f, 0.2f, WHITE);
+
+        DrawRectangleRec(enemy2, WHITE);
+        DrawTextureEx(bombMoveL, { enemy2.x, enemy2.y }, 0.0f, 0.2f, WHITE);
         //Fin enemigos
 
 
@@ -128,6 +142,10 @@ int main() {
     UnloadTexture(greenPlane);
     UnloadTexture(yellowPlane);
     UnloadTexture(redPlane);
+
+    UnloadTexture(bombMoveL);
+    UnloadTexture(bombMoveR);
+    UnloadTexture(bombStatic);
 
     CloseWindow();
 
