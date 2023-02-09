@@ -8,8 +8,70 @@ static const char* GAME_TITLE = "Defend Erusea";
 
 static const int SKY_WIDTH = 14;
 
+//Background
+Texture2D skyBackGMountain;
+Texture2D farBackGMountain;
+Texture2D midBackGMountain;
+Texture2D forBackGMountain;
 
+//Nubes
+Texture2D cloudOneBackGround;
+Texture2D cloudTwoBackGround;
+Texture2D cloudThreeBackGround;
 
+//Imagenes avión
+Texture2D greenPlane;
+Texture2D yellowPlane;
+Texture2D redPlane;
+
+//Enemigos
+Texture2D bombMoveL;
+Texture2D bombMoveR;
+Texture2D bombStatic;
+
+//MovimientoBackground
+unsigned int scrollingBack = 0;
+unsigned int scrollingMid = 0;
+unsigned int scrollingFore = 0;
+
+void init() {
+
+    //Background
+    skyBackGMountain = LoadTexture("resources/background/sky_color.png");
+    farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
+    midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
+    forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
+
+    //Nubes
+    cloudOneBackGround = LoadTexture("resources/clouds/1.png");
+    cloudTwoBackGround = LoadTexture("resources/clouds/2.png");
+    cloudThreeBackGround = LoadTexture("resources/clouds/3.png");
+
+    //Imagenes avión
+    greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
+    yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
+    redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
+
+    //Enemigos
+    bombMoveL = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
+    bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
+    bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
+}
+
+void end() {
+    UnloadTexture(skyBackGMountain);
+    UnloadTexture(farBackGMountain);
+    UnloadTexture(midBackGMountain);
+    UnloadTexture(forBackGMountain);
+
+    UnloadTexture(greenPlane);
+    UnloadTexture(yellowPlane);
+    UnloadTexture(redPlane);
+
+    UnloadTexture(bombMoveL);
+    UnloadTexture(bombMoveR);
+    UnloadTexture(bombStatic);
+}
 
 void generateWidgetHealth(int pPlayerHealth) {
 
@@ -22,40 +84,14 @@ void generateWidgetHealth(int pPlayerHealth) {
         DrawRectangle(10, 10, pPlayerHealth, 20, RED);
 }
 
-
 int main() {
     
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, GAME_TITLE);
 
     SetTargetFPS(60);
 
-    //Background
-    int backgroundX = 0;
-    Texture2D skyBackGMountain = LoadTexture("resources/background/sky_color.png");
-    Texture2D farBackGMountain = LoadTexture("resources/background/mountain_with_hills/farground_mountains.png");
-    Texture2D midBackGMountain = LoadTexture("resources/background/mountain_with_hills/midground_mountains.png");
-    Texture2D forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
-
-    //Nubes
-    Texture2D cloudOneBackGround = LoadTexture("resources/clouds/1.png");
-    Texture2D cloudTwoBackGround = LoadTexture("resources/clouds/2.png");
-    Texture2D cloudThreeBackGround = LoadTexture("resources/clouds/3.png");
-
-    //Imagenes avión
-    Texture2D greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
-    Texture2D yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
-    Texture2D redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
-
-    //Enemigos
-    Texture2D bombMoveL = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
-    Texture2D bombMoveR = LoadTexture("resources/planes/torpedo/torpedo_black_right.png");
-    Texture2D bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
-
-    //MovimientoBackground
-    float scrollingBack = 0.0f;
-    float scrollingMid = 0.0f;
-    float scrollingFore = 0.0f;
-
+    init();
+    
     Vector2 currentPosition;
     currentPosition.x = 100;
     currentPosition.y = 150;
@@ -73,9 +109,9 @@ int main() {
         ClearBackground(BLACK);
 
         //BackGround movimiento
-        scrollingBack -= 10.2f;
-        scrollingMid -= 10.0f;
-        scrollingFore -= 10.0f;
+        scrollingBack -= 10;
+        scrollingMid -= 10;
+        scrollingFore -= 10;
 
         if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
         if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
@@ -146,18 +182,7 @@ int main() {
         EndDrawing();
     }
 
-    UnloadTexture(skyBackGMountain);
-    UnloadTexture(farBackGMountain);
-    UnloadTexture(midBackGMountain);
-    UnloadTexture(forBackGMountain);
-
-    UnloadTexture(greenPlane);
-    UnloadTexture(yellowPlane);
-    UnloadTexture(redPlane);
-
-    UnloadTexture(bombMoveL);
-    UnloadTexture(bombMoveR);
-    UnloadTexture(bombStatic);
+    end();
 
     CloseWindow();
 
