@@ -46,7 +46,7 @@ float enemy2Speed = 2.0f;
 //Nuestra vida
 int playerHealth = 100;
 
-void init() {
+void initApp() {
 
     //Background
     skyBackGMountain = LoadTexture("resources/background/sky_color.png");
@@ -59,7 +59,7 @@ void init() {
     cloudTwoBackGround = LoadTexture("resources/clouds/2.png");
     cloudThreeBackGround = LoadTexture("resources/clouds/3.png");
 
-    //Imagenes avión
+    //Imagenes avion
     greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
     yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
     redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
@@ -70,7 +70,7 @@ void init() {
     bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
 }
 
-void end() {
+void endApp() {
 
     UnloadTexture(skyBackGMountain);
     UnloadTexture(farBackGMountain);
@@ -104,7 +104,7 @@ int main() {
 
     SetTargetFPS(60);
 
-    init();
+    initApp();
 
     while (!WindowShouldClose()) {
 
@@ -186,7 +186,7 @@ int main() {
         EndDrawing();
     }
 
-    end();
+    endApp();
 
     CloseWindow();
 
