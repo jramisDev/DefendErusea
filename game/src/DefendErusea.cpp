@@ -238,13 +238,10 @@ int main() {
                     framesCounter = 0;
 
                     if (playerPlane.getHealth() <= 0) { 
-                        actualScreen = MENU; 
+                        actualScreen = GAMEOVER; 
                         playerPlane = Ship();
                     }
                 }
-
-
-
 
                 //Enemigos
                 DrawTextureEx(enemyStatic.getImg(), enemyStatic.getCurrentPosition(), 0.0f, 0.2f, WHITE);
@@ -261,7 +258,7 @@ int main() {
                 setGenerateProgressionBar(playerPlane);
 
                 if (playerPlane.getCurrentPosition().x > SCREEN_WIDTH - 150) {
-                    actualScreen = MENU;
+                    actualScreen = WIN;
                     playerPlane = Ship();
                 } 
 
