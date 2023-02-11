@@ -16,12 +16,13 @@
 
 #define SKY_WIDTH 14
 
-
 //Widget Health
 #define WIDGET_POS_X 10
 #define WIDGET_POS_Y 10
 #define WIDGET_HEIGHT 20
 #define WIDGET_WIDTH 100
+
+enum Screens {MENU, GAME, WIN, GAMEOVER};
 
 
 class Ship {
@@ -37,8 +38,8 @@ class Ship {
 public:
     Ship() {
         currentSpeed = 10;
-        health = 100;
-        powerFire = 1;
+        health = 10;
+        powerFire = 5;
         currentPos.x = 0;
         currentPos.y = 100;
     };
@@ -165,9 +166,9 @@ void generateWidgetHealth(short pPlayerHealth) {
 
     //Generamos barra de salud
     DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, WIDGET_WIDTH, WIDGET_HEIGHT, BLACK);
-    if (pPlayerHealth > 50)
+    if (pPlayerHealth >= 50)
         DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, GREEN);
-    else if (pPlayerHealth > 20 && pPlayerHealth < 50)
+    else if (pPlayerHealth >= 20 && pPlayerHealth < 50)
         DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, YELLOW);
     else
         DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, RED);
@@ -242,8 +243,12 @@ void setGenerateProgressionBar(Ship pPlayer) {
 }
 
 int main() {
+
+
     
     initApp();
+
+    Screens pantallaActual = MENU;
 
     Ship playerPlane;
     playerPlane.setImg(greenPlane);    
@@ -267,80 +272,122 @@ int main() {
 
         framesCounter++;
 
-        Vector2 movement;
-        movement.x = 0;
-        movement.y = 0;
-
-        if (IsKeyDown(KEY_A)) {
-            if (playerPlane.getCurrentPosition().x >= 2)  movement.x = -1;
-        }
-        if (IsKeyDown(KEY_D)) {
-            if (playerPlane.getCurrentPosition().x <= 698) movement.x = 1;
-        }
-        if (IsKeyDown(KEY_W)) {
-            if (playerPlane.getCurrentPosition().y >= 2) movement.y = -1;
-        }
-        if (IsKeyDown(KEY_S)) {
-            if (playerPlane.getCurrentPosition().y <= 385) movement.y = 1;
-        }
-        playerPlane.Move(movement);
-
-        //setMovementPlayer(playerPlane, movement);
-
         BeginDrawing();
 
         ClearBackground(BLACK);
 
-        setBackground();
+        switch (pantallaActual) {
+            case MENU: {
 
-        
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
+                DrawText(GAME_TITLE, 250, 150, 40, RED);
+                DrawText("PRESS ENTER to GAME", 275, 195, 20, DARKGREEN);
 
-        setMovementEnemy(enemyMove);
-              
+                DrawText("CONTROLS:", 275, 250, 20, BLACK);
+                DrawText("W to UP", 275, 275, 15, BLACK);
+                DrawText("S to DOWN", 275, 290, 15, BLACK);
+                DrawText("A to LEFT", 275, 305, 15, BLACK);
+                DrawText("D to RIGHT", 275, 320, 15, BLACK);
 
-        //Controlamos que nos de un margen de tiempo tras impactos
-        if (framesCounter >= 30) {
+                if (IsKeyDown(KEY_ENTER)) pantallaActual = GAME;
+            }break;
+            case GAME: {
 
-            //Colision player - enemigo
-            Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
+                Vector2 movement;
+                movement.x = 0;
+                movement.y = 0;
+
+                if (IsKeyDown(KEY_A)) {
+                    if (playerPlane.getCurrentPosition().x >= 2)  movement.x = -1;
+                }
+                if (IsKeyDown(KEY_D)) {
+                    if (playerPlane.getCurrentPosition().x <= 698) movement.x = 1;
+                }
+                if (IsKeyDown(KEY_W)) {
+                    if (playerPlane.getCurrentPosition().y >= 2) movement.y = -1;
+                }
+                if (IsKeyDown(KEY_S)) {
+                    if (playerPlane.getCurrentPosition().y <= 385) movement.y = 1;
+                }
+                playerPlane.Move(movement);
+
+                //setMovementPlayer(playerPlane, movement);
+
+                setBackground();
+
+                setMovementEnemy(enemyMove);
+
+                //Controlamos que nos de un margen de tiempo tras impactos
+                if (framesCounter >= 30) {
+
+                    //Colision player - enemigo
+                    Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
 
 
-            if (CheckCollisionRecs(playerRect, enemy1)) {
-                playerPlane.setHealth(enemyStatic.getPowerFire());
+                    if (CheckCollisionRecs(playerRect, enemy1)) {
+                        playerPlane.setHealth(enemyStatic.getPowerFire());
 
-                if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-                    playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+                        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                            playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+                        }
+
+                    }
+
+                    if (CheckCollisionRecs(playerRect, enemy2)) {
+                        playerPlane.setHealth(enemyMove.getPowerFire());
+
+                        if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+                            playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
+                        }
+
+                    }
+                    //FIN Colision player - enemigo
+                    framesCounter = 0;
+
+                    if (playerPlane.getHealth() <= 0) pantallaActual = WIN;
                 }
 
-            }
+                //Enemigos
+                DrawTextureEx(enemyStatic.getImg(), enemyStatic.getCurrentPosition(), 0.0f, 0.2f, WHITE);
 
-            if (CheckCollisionRecs(playerRect, enemy2)) {
-                playerPlane.setHealth(enemyMove.getPowerFire());
+                DrawTextureEx(enemyMove.getImg(), { enemy2.x - 5, enemy2.y }, 0.0f, 0.2f, WHITE);
+                //Fin enemigos
 
-                if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
-                    playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
-                }
+                 //Generamos el nuestro avion
+                 //DrawCircle((int)playerPlane.getCurrentPosition().x, (int)playerPlane.getCurrentPosition().y, 10, BLUE);
+                DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
 
-            }
-            //FIN Colision player - enemigo
-            framesCounter = 0;
+                generateWidgetHealth(playerPlane.getHealth());
+
+                //Revisar, no esta correcto
+                setGenerateProgressionBar(playerPlane);
+
+            }break;
+            case WIN: {
+
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
+                DrawText("YOU WIN!", 250, 150, 40, GREEN);
+                DrawText("PRESS ENTER to MENU", 250, 195, 20, DARKGREEN);
+
+                if (IsKeyDown(KEY_ENTER)) pantallaActual = MENU;
+            }break;
+            case GAMEOVER: {
+
+                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
+                DrawText("GAME OVER", 250, 150, 40, RED);
+                DrawText("PRESS ENTER to MENU", 250, 195, 20, DARKGREEN);
+
+                if (IsKeyDown(KEY_ENTER)) pantallaActual = MENU;
+            }break;
+            default: {
+                pantallaActual = MENU;
+            }break;
         }
 
 
-        //Enemigos
-        DrawTextureEx(enemyStatic.getImg(), enemyStatic.getCurrentPosition(), 0.0f, 0.2f, WHITE);
 
-        DrawTextureEx(enemyMove.getImg(), { enemy2.x - 5, enemy2.y }, 0.0f, 0.2f, WHITE);
-       //Fin enemigos
 
-        //Generamos el nuestro avion
-        //DrawCircle((int)playerPlane.getCurrentPosition().x, (int)playerPlane.getCurrentPosition().y, 10, BLUE);
-        DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
 
-        generateWidgetHealth(playerPlane.getHealth());
-
-        //Revisar, no esta correcto
-        setGenerateProgressionBar(playerPlane);
 
         EndDrawing();
     }
