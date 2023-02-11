@@ -1,8 +1,6 @@
 #include "raylib.h"
 #include "screens.h"
-#include <iostream>
-#include "screens.h"
-//#include "initDE.h"
+#include "DefendErusea.h"
 
 //FPS
 #define FPS 60
@@ -58,7 +56,6 @@ int scrollingMid = 0;
 int scrollingFore = 0;
 
 //Posiciones
-Rectangle enemy1 = { 450, 250, 60, 15 };
 Rectangle enemy2 = { 600, 100, 90, 35 };
 
 //Velocidad enemigo
@@ -113,11 +110,12 @@ class Enemy :public Ship {
 
 public:
     Enemy() {};
-    Enemy(short pPowerFire, Rectangle pRectColision, Texture2D pImg, Vector2 pCurrentPosition) {
+    Enemy(short pPowerFire, Rectangle pRectColision, Texture2D pImg, Vector2 pCurrentPosition, short pCurrentSpeed) {
         powerFire = pPowerFire;
         rectColision = pRectColision;
         setImg(pImg);
         setCurrentPosition(pCurrentPosition);
+        setCurrentSpeed(pCurrentSpeed);
     }
 
     short getPowerFire() { return powerFire; }
@@ -138,15 +136,15 @@ Screens actualScreen = MENU;
 
 static void initApp();
 static void endApp();
-static void generateWidgetHealth(short pPlayerHealth);
+static void generateWidgetHealth();
 static void setBackground();
-static void setMovementPlayer(Ship pPlayerPlane, Vector2 pMovement);
+static void setMovementPlayer();
 static void setMovementEnemy(Enemy pEnemyMove);
 static void setGenerateProgressionBar(Ship pPlayer);
 static void endApp();
 
 int main() {
-    
+        
     initApp();
 
     actualScreen = MENU;
@@ -176,7 +174,7 @@ int main() {
             }break;
             case GAME: {
 
-                Vector2 movement;
+                /*Vector2 movement;
                 movement.x = 0;
                 movement.y = 0;
 
@@ -194,7 +192,9 @@ int main() {
                 }
                 playerPlane.Move(movement);
 
-                //setMovementPlayer(playerPlane, movement);
+                setMovementPlayer(playerPlane, movement);*/
+
+                setMovementPlayer();
 
 
 
@@ -248,7 +248,7 @@ int main() {
                  //Generamos el nuestro avion
                 DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
 
-                generateWidgetHealth(playerPlane.getHealth());
+                generateWidgetHealth();
 
                 //Revisar, no esta correcto
                 setGenerateProgressionBar(playerPlane);
@@ -325,8 +325,8 @@ void initApp() {
 
     playerPlane = Ship(10, 100, greenPlane, {0,100});
 
-    enemyStatic = Enemy(5, Rectangle { 450, 250, 60, 15 }, bombStatic, Vector2 { 430, 235 });
-    enemyMove = Enemy(1, Rectangle { 450, 250, 60, 15 }, bombMove, Vector2 { 430, 235 });
+    enemyStatic = Enemy(5, Rectangle { 450, 250, 60, 15 }, bombStatic, Vector2 { 430, 235 }, 2);
+    enemyMove = Enemy(1, Rectangle { 450, 250, 60, 15 }, bombMove, Vector2 { 430, 235 }, 2);
 }
 
 void endApp() {
@@ -352,16 +352,15 @@ void endApp() {
 
 }
 
-void generateWidgetHealth(short pPlayerHealth) {
+void generateWidgetHealth() {
 
-    //Generamos barra de salud
     DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, WIDGET_WIDTH, WIDGET_HEIGHT, BLACK);
-    if (pPlayerHealth >= 50)
-        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, GREEN);
-    else if (pPlayerHealth >= 20 && pPlayerHealth < 50)
-        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, YELLOW);
+    if (playerPlane.getHealth() >= 50)
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, playerPlane.getHealth(), WIDGET_HEIGHT, GREEN);
+    else if (playerPlane.getHealth() >= 20 && playerPlane.getHealth() < 50)
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, playerPlane.getHealth(), WIDGET_HEIGHT, YELLOW);
     else
-        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, pPlayerHealth, WIDGET_HEIGHT, RED);
+        DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, playerPlane.getHealth(), WIDGET_HEIGHT, RED);
 }
 
 void setBackground() {
@@ -385,40 +384,28 @@ void setBackground() {
 
     DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
     DrawTexture(forBackGMountain, scrollingBack + skyBackGMountain.width, 400, WHITE);
-    //Fin background
+
 }
 
-void setMovementPlayer(Ship pPlayerPlane, Vector2 pMovement) {
+void setMovementPlayer() {
 
-    //Movimiento de avion
-   /* if (IsKeyDown(KEY_A)) {
-        if (currentPosition.x >= 2) currentPosition.x = currentPosition.x - pPlayerPlane.getCurrentSpeed();
-    }
-    if (IsKeyDown(KEY_D)) {
-        if (currentPosition.x <= 698) currentPosition.x = currentPosition.x + pPlayerPlane.getCurrentSpeed();
-    }
-    if (IsKeyDown(KEY_W)) {
-        if (currentPosition.y >= 2) currentPosition.y = currentPosition.y - pPlayerPlane.getCurrentSpeed();
-    }
-    if (IsKeyDown(KEY_S)) {
-        if (currentPosition.y <= 390) currentPosition.y = currentPosition.y + pPlayerPlane.getCurrentSpeed();
-    }*/
+    Vector2 movement;
+    movement.x = 0;
+    movement.y = 0;
 
     if (IsKeyDown(KEY_A)) {
-        if (pPlayerPlane.getCurrentPosition().x >= 2)  pMovement.x = -1;
+        if (playerPlane.getCurrentPosition().x >= 2)  movement.x = -1;
     }
     if (IsKeyDown(KEY_D)) {
-        if (pPlayerPlane.getCurrentPosition().x <= 698) pMovement.x = 1;
+        if (playerPlane.getCurrentPosition().x <= 698) movement.x = 1;
     }
     if (IsKeyDown(KEY_W)) {
-        if (pPlayerPlane.getCurrentPosition().y >= 2) pMovement.y = -1;
+        if (playerPlane.getCurrentPosition().y >= 2) movement.y = -1;
     }
     if (IsKeyDown(KEY_S)) {
-        if (pPlayerPlane.getCurrentPosition().y <= 385) pMovement.y = 1;
+        if (playerPlane.getCurrentPosition().y <= 385) movement.y = 1;
     }
-    pPlayerPlane.Move(pMovement);
-
-    //Fin Movimiento de avion
+    playerPlane.Move(movement);
 }
 
 void setMovementEnemy(Enemy pEnemyMove) {
@@ -426,6 +413,11 @@ void setMovementEnemy(Enemy pEnemyMove) {
     enemy2.y += enemy2Speed;
     if (enemy2.y >= SCREEN_HEIGHT - enemy2.width) enemy2Speed *= -1;
     if (enemy2.y <= 0) enemy2Speed *= -1;
+    
+
+    /*pEnemyMove.setCurrentPosition(Vector2{pEnemyMove.getCurrentPosition().x, pEnemyMove.getCurrentPosition().y + pEnemyMove.getCurrentSpeed()});
+    if (pEnemyMove.getCurrentPosition().y >= SCREEN_HEIGHT - pEnemyMove.getRectColision().width) pEnemyMove.setCurrentSpeed(pEnemyMove.getCurrentSpeed() * -1);
+    if (pEnemyMove.getCurrentPosition().y <= 0) pEnemyMove.setCurrentSpeed(pEnemyMove.getCurrentSpeed() * -1);*/
 }
 
 void setGenerateProgressionBar(Ship pPlayer) {
