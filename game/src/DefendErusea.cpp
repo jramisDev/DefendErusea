@@ -248,7 +248,7 @@ int main() {
     
     initApp();
 
-    Screens pantallaActual = MENU;
+    Screens actualScreen = MENU;
 
     Ship playerPlane;
     playerPlane.setImg(greenPlane);    
@@ -276,7 +276,7 @@ int main() {
 
         ClearBackground(BLACK);
 
-        switch (pantallaActual) {
+        switch (actualScreen) {
             case MENU: {
 
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
@@ -289,7 +289,7 @@ int main() {
                 DrawText("A to LEFT", 275, 305, 15, BLACK);
                 DrawText("D to RIGHT", 275, 320, 15, BLACK);
 
-                if (IsKeyDown(KEY_ENTER)) pantallaActual = GAME;
+                if (IsKeyDown(KEY_ENTER)) actualScreen = GAME;
             }break;
             case GAME: {
 
@@ -318,7 +318,7 @@ int main() {
                 setMovementEnemy(enemyMove);
 
                 //Controlamos que nos de un margen de tiempo tras impactos
-                if (framesCounter >= 30) {
+                if (framesCounter >= 15) {
 
                     //Colision player - enemigo
                     Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
@@ -344,7 +344,7 @@ int main() {
                     //FIN Colision player - enemigo
                     framesCounter = 0;
 
-                    if (playerPlane.getHealth() <= 0) pantallaActual = WIN;
+                    if (playerPlane.getHealth() <= 0) actualScreen = GAMEOVER;
                 }
 
                 //Enemigos
@@ -354,7 +354,6 @@ int main() {
                 //Fin enemigos
 
                  //Generamos el nuestro avion
-                 //DrawCircle((int)playerPlane.getCurrentPosition().x, (int)playerPlane.getCurrentPosition().y, 10, BLUE);
                 DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
 
                 generateWidgetHealth(playerPlane.getHealth());
@@ -362,25 +361,27 @@ int main() {
                 //Revisar, no esta correcto
                 setGenerateProgressionBar(playerPlane);
 
+                if (playerPlane.getCurrentPosition().x > SCREEN_WIDTH-150) actualScreen = WIN;
+
             }break;
             case WIN: {
 
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
                 DrawText("YOU WIN!", 250, 150, 40, GREEN);
-                DrawText("PRESS ENTER to MENU", 250, 195, 20, DARKGREEN);
+                DrawText("PRESS SPACE to MENU", 250, 195, 20, DARKGREEN);
 
-                if (IsKeyDown(KEY_ENTER)) pantallaActual = MENU;
+                if (IsKeyDown(KEY_SPACE)) actualScreen = MENU;
             }break;
             case GAMEOVER: {
 
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SKYBLUE);
                 DrawText("GAME OVER", 250, 150, 40, RED);
-                DrawText("PRESS ENTER to MENU", 250, 195, 20, DARKGREEN);
+                DrawText("PRESS SPACE to MENU", 250, 195, 20, DARKGREEN);
 
-                if (IsKeyDown(KEY_ENTER)) pantallaActual = MENU;
+                if (IsKeyDown(KEY_SPACE)) actualScreen = MENU;
             }break;
             default: {
-                pantallaActual = MENU;
+                actualScreen = MENU;
             }break;
         }
 
