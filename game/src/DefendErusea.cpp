@@ -51,14 +51,12 @@ Texture2D explosion;
 Sound damagedSound;
 Sound diedSound;
 
-
 //MovimientoBackground
 int scrollingBack = 0;
 int scrollingMid = 0;
 int scrollingFore = 0;
 
 //Posiciones
-
 Rectangle enemy1 = { 450, 250, 60, 15 };
 Rectangle enemy2 = { 600, 100, 90, 35 };
 
@@ -77,11 +75,17 @@ class Ship {
 public:
     Ship() {
         currentSpeed = 10;
-        health = 10;
+        health = 100;
         currentPos.x = 0;
         currentPos.y = 100;
         img = greenPlane;
     };
+    Ship(short pCurrentSpeed, short pHealth, Texture2D pImg, Vector2 pCurrentPos) {
+        currentSpeed = pCurrentSpeed;
+        health = pHealth;
+        img = pImg;
+        currentPos = pCurrentPos;
+    }
 
     short getCurrentSpeed() { return currentSpeed; }
     void setCurrentSpeed(short pSpeed) { currentSpeed = pSpeed; };
@@ -128,6 +132,7 @@ public:
 
 };
 
+//Inicializamos jugador y enemigos
 Ship playerPlane;
 Enemy enemyStatic;
 Enemy enemyMove;
@@ -327,7 +332,7 @@ void initApp() {
     damagedSound = LoadSound("resources/audio/Impact.wav");
     diedSound = LoadSound("resources/audio/Explosion.wav");
 
-    playerPlane = Ship();
+    playerPlane = Ship(10, 100, greenPlane, {0,100});
 
     enemyStatic = Enemy(5, { 450, 250, 60, 15 }, bombStatic, { 430, 235 });
     enemyMove = Enemy(1, { 450, 250, 60, 15 }, bombMove, { 430, 235 });
