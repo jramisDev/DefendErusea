@@ -2,6 +2,7 @@
 #include "screens.h"
 #include <iostream>
 #include "screens.h"
+//#include "initDE.h"
 
 //FPS
 #define FPS 60
@@ -111,12 +112,7 @@ class Enemy :public Ship {
     Rectangle rectColision;
 
 public:
-    Enemy() {
-        setCurrentSpeed(2);
-        setHealth(10);
-        powerFire = 5;
-        setCurrentPosition({ 0,100 });
-    }
+    Enemy() {};
     Enemy(short pPowerFire, Rectangle pRectColision, Texture2D pImg, Vector2 pCurrentPosition) {
         powerFire = pPowerFire;
         rectColision = pRectColision;
@@ -134,8 +130,11 @@ public:
 
 //Inicializamos jugador y enemigos
 Ship playerPlane;
-Enemy enemyStatic;
-Enemy enemyMove;
+Enemy enemyStatic = Enemy();
+Enemy enemyMove = Enemy();;
+
+int framesCounter = 0;
+Screens actualScreen = MENU;
 
 static void initApp();
 static void endApp();
@@ -146,19 +145,11 @@ static void setMovementEnemy(Enemy pEnemyMove);
 static void setGenerateProgressionBar(Ship pPlayer);
 static void endApp();
 
-
-
 int main() {
     
     initApp();
 
-    Screens actualScreen = MENU;
-
-    
-
-
-    int framesCounter = 0;
-
+    actualScreen = MENU;
 
     while (!WindowShouldClose()) {
 
@@ -222,7 +213,7 @@ int main() {
                     Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
 
 
-                    if (CheckCollisionRecs(playerRect, enemy1)) {
+                    if (CheckCollisionRecs(playerRect, enemyStatic.getRectColision())) {
                         playerPlane.setHealth(enemyStatic.getPowerFire());
 
                         if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
@@ -231,7 +222,7 @@ int main() {
 
                     }
 
-                    if (CheckCollisionRecs(playerRect, enemy2)) {
+                    if (CheckCollisionRecs(playerRect, enemyStatic.getRectColision())) {
                         playerPlane.setHealth(enemyMove.getPowerFire());
 
                         if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
@@ -334,8 +325,8 @@ void initApp() {
 
     playerPlane = Ship(10, 100, greenPlane, {0,100});
 
-    enemyStatic = Enemy(5, { 450, 250, 60, 15 }, bombStatic, { 430, 235 });
-    enemyMove = Enemy(1, { 450, 250, 60, 15 }, bombMove, { 430, 235 });
+    enemyStatic = Enemy(5, Rectangle { 450, 250, 60, 15 }, bombStatic, Vector2 { 430, 235 });
+    enemyMove = Enemy(1, Rectangle { 450, 250, 60, 15 }, bombMove, Vector2 { 430, 235 });
 }
 
 void endApp() {
