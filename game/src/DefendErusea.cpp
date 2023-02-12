@@ -1,13 +1,11 @@
 #include "raylib.h"
 #include "screens.h"
-#include "DefendErusea.h"
+#include <iostream>
+#include <string>
+//#include "DefendErusea.h"
 
 //FPS
 #define FPS 60
-
-//Explosion
-#define NUM_FRAMES_PER_LINE 3
-#define NUM_LINES 3
 
 //WindowScreen
 #define SCREEN_WIDTH 800
@@ -37,14 +35,11 @@ Texture2D cloudThreeBackGround;
 
 //Imagenes avión
 Texture2D greenPlane;
-Texture2D yellowPlane;
 Texture2D redPlane;
 
 //Enemigos
 Texture2D bombMove;
 Texture2D bombStatic;
-
-Texture2D explosion;
 
 //Sonidos
 Sound damagedSound;
@@ -134,22 +129,18 @@ Enemy enemyMove = Enemy();;
 int framesCounter = 0;
 Screens actualScreen = MENU;
 
+bool impacto = false;
+
 static void initApp();
 static void endApp();
 static void generateWidgetHealth();
 static void setBackground();
 static void setMovementPlayer();
 static void setMovementEnemy();
-static void checkCollisions();
+static bool checkCollisions();
 static void setDrawsObjets();
 static void setGenerateProgressionBar();
 static void endApp();
-
-// Background position
-float skyBackPos = 0.0f;
-
-// Background speed
-float skyBackSpeed = 10.0f;
 
 int main() {
         
@@ -185,7 +176,7 @@ int main() {
                 setMovementPlayer();
                 setBackground();
                 setMovementEnemy();
-                checkCollisions();
+                impacto = checkCollisions();
                 setDrawsObjets();
                 generateWidgetHealth();
                 setGenerateProgressionBar();
@@ -244,14 +235,11 @@ void initApp() {
 
     //Imagenes avion
     greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
-    yellowPlane = LoadTexture("resources/planes/plane_2/plane_2_yellow.png");
     redPlane = LoadTexture("resources/planes/plane_2/plane_2_red.png");
 
     //Enemigos
     bombMove = LoadTexture("resources/planes/torpedo/torpedo_black_left.png");
     bombStatic = LoadTexture("resources/planes/torpedo/torpedo.png");
-
-    explosion = LoadTexture("resources/explosion_effect/spritesheet/explosion.png");
 
     SetTargetFPS(FPS);
 
@@ -274,7 +262,6 @@ void endApp() {
     UnloadTexture(forBackGMountain);
 
     UnloadTexture(greenPlane);
-    UnloadTexture(yellowPlane);
     UnloadTexture(redPlane);
 
     UnloadTexture(bombMove);
@@ -300,7 +287,7 @@ void generateWidgetHealth() {
         DrawRectangle(WIDGET_POS_X, WIDGET_POS_Y, playerPlane.getHealth(), WIDGET_HEIGHT, RED);
 }
 
-void checkCollisions() {
+bool checkCollisions() {
 
     if (framesCounter >= 15) {
 
@@ -308,8 +295,12 @@ void checkCollisions() {
         Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
 
 
+
         if (CheckCollisionRecs(playerRect, enemyStatic.getRectColision())) {
+
             playerPlane.setHealth(enemyStatic.getPowerFire());
+            playerPlane.setImg(redPlane);
+            impacto = true;
 
             if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
                 playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
@@ -318,13 +309,18 @@ void checkCollisions() {
         }
 
         if (CheckCollisionRecs(playerRect, enemy2)) {
+
             playerPlane.setHealth(enemyMove.getPowerFire());
+            playerPlane.setImg(redPlane);
+            impacto = true;
 
             if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
                 playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
             }
 
         }
+
+
         //FIN Colision player - enemigo
         framesCounter = 0;
 
@@ -333,9 +329,11 @@ void checkCollisions() {
             playerPlane = Ship();
         }
     }
+
+    return impacto;
 }
 
-void setDrawsObjets() {
+void setDrawsObjets() {    
 
     //Enemigos
     DrawTextureEx(enemyStatic.getImg(), enemyStatic.getCurrentPosition(), 0.0f, 0.2f, WHITE);
@@ -344,7 +342,12 @@ void setDrawsObjets() {
     //Fin enemigos
 
      //Generamos el nuestro avion
-    DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
+    if (impacto) {
+        DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);     
+        impacto = false;
+        playerPlane.setImg(greenPlane);
+    } else DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
+
 }
 
 void setBackground() {
@@ -354,8 +357,6 @@ void setBackground() {
     scrollingMid -= 30;
     scrollingFore -= 50;
 
-    skyBackPos -= skyBackPos;
-
 
     if (scrollingBack >= farBackGMountain.width) scrollingBack = 0;
     if (scrollingMid >= midBackGMountain.width) scrollingMid = 0;
@@ -364,13 +365,13 @@ void setBackground() {
     for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
 
     DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
-    DrawTexture(farBackGMountain, scrollingBack + farBackGMountain.width, 125, WHITE);
+    //DrawTexture(farBackGMountain, scrollingBack + farBackGMountain.width, 125, WHITE);
 
     DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
-    DrawTexture(midBackGMountain, scrollingBack + midBackGMountain.width, 330, WHITE);
+    //DrawTexture(midBackGMountain, scrollingBack + midBackGMountain.width, 330, WHITE);
 
     DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
-    DrawTexture(forBackGMountain, scrollingBack + forBackGMountain.width, 400, WHITE);
+    //DrawTexture(forBackGMountain, scrollingBack + forBackGMountain.width, 400, WHITE);
 
 }
 
