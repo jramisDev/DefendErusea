@@ -302,7 +302,7 @@ void generateWidgetHealth() {
 
 void checkCollisions() {
 
-    //if (framesCounter >= 15) {
+    if (framesCounter >= 15) {
 
         //Colision player - enemigo
         Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
@@ -316,8 +316,6 @@ void checkCollisions() {
             }
 
         }
-
-        DrawRectangle(enemy2.x, enemy2.y, enemyMove.getRectColision().width, enemyMove.getRectColision().height, BLUE);
 
         if (CheckCollisionRecs(playerRect, enemy2)) {
             playerPlane.setHealth(enemyMove.getPowerFire());
@@ -334,7 +332,7 @@ void checkCollisions() {
             actualScreen = GAMEOVER;
             playerPlane = Ship();
         }
-    //}
+    }
 }
 
 void setDrawsObjets() {
@@ -359,20 +357,20 @@ void setBackground() {
     skyBackPos -= skyBackPos;
 
 
-    if (scrollingBack >= skyBackGMountain.width) scrollingBack = 0;
+    if (scrollingBack >= farBackGMountain.width) scrollingBack = 0;
     if (scrollingMid >= midBackGMountain.width) scrollingMid = 0;
     if (scrollingFore >= forBackGMountain.width) scrollingFore = 0;
 
     for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
 
     DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
-    DrawTexture(farBackGMountain, scrollingBack + 800, 125, WHITE);
+    DrawTexture(farBackGMountain, scrollingBack + farBackGMountain.width, 125, WHITE);
 
     DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
-    DrawTexture(midBackGMountain, scrollingBack + 800, 330, WHITE);
+    DrawTexture(midBackGMountain, scrollingBack + midBackGMountain.width, 330, WHITE);
 
     DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
-    DrawTexture(forBackGMountain, scrollingBack + 800, 400, WHITE);
+    DrawTexture(forBackGMountain, scrollingBack + forBackGMountain.width, 400, WHITE);
 
 }
 
