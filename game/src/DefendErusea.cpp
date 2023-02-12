@@ -139,11 +139,17 @@ static void endApp();
 static void generateWidgetHealth();
 static void setBackground();
 static void setMovementPlayer();
-static void setMovementEnemy(Enemy pEnemyMove);
+static void setMovementEnemy();
 static void checkCollisions();
 static void setDrawsObjets();
 static void setGenerateProgressionBar();
 static void endApp();
+
+// Background position
+float skyBackPos = 0.0f;
+
+// Background speed
+float skyBackSpeed = 10.0f;
 
 int main() {
         
@@ -178,7 +184,7 @@ int main() {
 
                 setMovementPlayer();
                 setBackground();
-                setMovementEnemy(enemyMove);
+                setMovementEnemy();
                 checkCollisions();
                 setDrawsObjets();
                 generateWidgetHealth();
@@ -257,7 +263,7 @@ void initApp() {
     playerPlane = Ship(10, 100, greenPlane, {0,100});
 
     enemyStatic = Enemy(5, Rectangle { 450, 250, 60, 15 }, bombStatic, Vector2 { 430, 235 }, 2);
-    enemyMove = Enemy(1, Rectangle { 450, 250, 60, 15 }, bombMove, Vector2 { 430, 235 }, 2);
+    enemyMove = Enemy(1, Rectangle { 600, 100, 90, 35 }, bombMove, Vector2 { 430, 235 }, 2);
 }
 
 void endApp() {
@@ -296,7 +302,7 @@ void generateWidgetHealth() {
 
 void checkCollisions() {
 
-    if (framesCounter >= 15) {
+    //if (framesCounter >= 15) {
 
         //Colision player - enemigo
         Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
@@ -311,7 +317,9 @@ void checkCollisions() {
 
         }
 
-        if (CheckCollisionRecs(playerRect, enemyStatic.getRectColision())) {
+        DrawRectangle(enemy2.x, enemy2.y, enemyMove.getRectColision().width, enemyMove.getRectColision().height, BLUE);
+
+        if (CheckCollisionRecs(playerRect, enemy2)) {
             playerPlane.setHealth(enemyMove.getPowerFire());
 
             if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
@@ -326,7 +334,7 @@ void checkCollisions() {
             actualScreen = GAMEOVER;
             playerPlane = Ship();
         }
-    }
+    //}
 }
 
 void setDrawsObjets() {
@@ -344,24 +352,27 @@ void setDrawsObjets() {
 void setBackground() {
 
     //BackGround movimiento
-    scrollingBack -= 1;
-    scrollingMid -= 1;
-    scrollingFore -= 1;
+    scrollingBack -= 10;
+    scrollingMid -= 30;
+    scrollingFore -= 50;
 
-    if (scrollingBack <= -farBackGMountain.width * 2) scrollingBack = 0;
-    if (scrollingMid <= -midBackGMountain.width * 2) scrollingMid = 0;
-    if (scrollingFore <= -forBackGMountain.width * 2) scrollingFore = 0;
+    skyBackPos -= skyBackPos;
+
+
+    if (scrollingBack >= skyBackGMountain.width) scrollingBack = 0;
+    if (scrollingMid >= midBackGMountain.width) scrollingMid = 0;
+    if (scrollingFore >= forBackGMountain.width) scrollingFore = 0;
 
     for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
 
     DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
-    DrawTexture(farBackGMountain, scrollingBack + skyBackGMountain.width, 125, WHITE);
+    DrawTexture(farBackGMountain, scrollingBack + 800, 125, WHITE);
 
     DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
-    DrawTexture(midBackGMountain, scrollingBack + skyBackGMountain.width, 330, WHITE);
+    DrawTexture(midBackGMountain, scrollingBack + 800, 330, WHITE);
 
     DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
-    DrawTexture(forBackGMountain, scrollingBack + skyBackGMountain.width, 400, WHITE);
+    DrawTexture(forBackGMountain, scrollingBack + 800, 400, WHITE);
 
 }
 
@@ -386,16 +397,14 @@ void setMovementPlayer() {
     playerPlane.Move(movement);
 }
 
-void setMovementEnemy(Enemy pEnemyMove) {
-    //Enemigos estatico y movible
+void setMovementEnemy() {
     enemy2.y += enemy2Speed;
     if (enemy2.y >= SCREEN_HEIGHT - enemy2.width) enemy2Speed *= -1;
     if (enemy2.y <= 0) enemy2Speed *= -1;
-    
 
-    /*pEnemyMove.setCurrentPosition(Vector2{pEnemyMove.getCurrentPosition().x, pEnemyMove.getCurrentPosition().y + pEnemyMove.getCurrentSpeed()});
-    if (pEnemyMove.getCurrentPosition().y >= SCREEN_HEIGHT - pEnemyMove.getRectColision().width) pEnemyMove.setCurrentSpeed(pEnemyMove.getCurrentSpeed() * -1);
-    if (pEnemyMove.getCurrentPosition().y <= 0) pEnemyMove.setCurrentSpeed(pEnemyMove.getCurrentSpeed() * -1);*/
+    /*enemyMove.setCurrentPosition(Vector2{enemyMove.getCurrentPosition().x, enemyMove.getCurrentPosition().y + enemyMove.getCurrentSpeed()});
+    if (enemyMove.getCurrentPosition().y >= SCREEN_HEIGHT - enemyMove.getRectColision().width) enemyMove.setCurrentSpeed(enemyMove.getCurrentSpeed() * -1);
+    if (enemyMove.getCurrentPosition().y <= 0) enemyMove.setCurrentSpeed(enemyMove.getCurrentSpeed() * -1);*/
 }
 
 void setGenerateProgressionBar() {
