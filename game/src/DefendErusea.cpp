@@ -1,15 +1,17 @@
 #include "raylib.h"
 #include "screens.h"
 #include <iostream>
-#include <string>
 //#include "DefendErusea.h"
+#include <time.h>
+
+#define MAX_CLOUDS 2
 
 //FPS
 #define FPS 60
 
 //WindowScreen
 #define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 450
+#define SCREEN_HEIGHT 400
 #define GAME_TITLE "Defend Erusea"
 
 #define SKY_WIDTH 14
@@ -29,9 +31,7 @@ Texture2D midBackGMountain;
 Texture2D forBackGMountain;
 
 //Nubes
-Texture2D cloudOneBackGround;
-Texture2D cloudTwoBackGround;
-Texture2D cloudThreeBackGround;
+Texture2D cloud;
 
 //Imagenes avión
 Texture2D greenPlane;
@@ -142,9 +142,35 @@ static void setDrawsObjets();
 static void setGenerateProgressionBar();
 static void endApp();
 
+float farBackGMountainPos = 0.0f;
+float farBackGMountainSpeed = 2.0f;
+
+float midBackGMountainPos = 0.0f;
+float midBackGMountainSpeed = 2.0f;
+
+float forBackGMountainPos = 0.0f;
+float forBackGMountainSpeed = 2.0f;
+
+typedef struct Cloud {
+    Texture2D texture;
+    Vector2 position;
+    float speed;
+} Cloud;
+
+Cloud clouds[MAX_CLOUDS];
+
 int main() {
         
     initApp();
+
+    // Inicializar las nubes
+    
+    for (int i = 0; i < MAX_CLOUDS; i++)
+    {
+        clouds[i].texture = cloud;
+        clouds[i].position = Vector2{ (float)(rand() % (SCREEN_WIDTH + clouds[i].texture.width)), (float)(rand() % (SCREEN_HEIGHT - clouds[i].texture.height)) };
+        clouds[i].speed = (float)(rand() % 5 + 2);
+    }
 
     actualScreen = MENU;
 
@@ -229,9 +255,7 @@ void initApp() {
     forBackGMountain = LoadTexture("resources/background/mountain_with_hills/foreground_mountains.png");
 
     //Nubes
-    cloudOneBackGround = LoadTexture("resources/clouds/1.png");
-    cloudTwoBackGround = LoadTexture("resources/clouds/2.png");
-    cloudThreeBackGround = LoadTexture("resources/clouds/3.png");
+    cloud = LoadTexture("resources/clouds/2.png");
 
     //Imagenes avion
     greenPlane = LoadTexture("resources/planes/plane_2/plane_2_green.png");
@@ -321,6 +345,7 @@ bool checkCollisions() {
         }
 
 
+
         //FIN Colision player - enemigo
         framesCounter = 0;
 
@@ -343,7 +368,7 @@ void setDrawsObjets() {
 
      //Generamos el nuestro avion
     if (impacto) {
-        DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);     
+        DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
         impacto = false;
         playerPlane.setImg(greenPlane);
     } else DrawTextureEx(playerPlane.getImg(), playerPlane.getCurrentPosition(), 0.0f, 0.1f, WHITE);
@@ -352,26 +377,42 @@ void setDrawsObjets() {
 
 void setBackground() {
 
-    //BackGround movimiento
-    scrollingBack -= 10;
-    scrollingMid -= 30;
-    scrollingFore -= 50;
+    farBackGMountainPos -= farBackGMountainSpeed;
+    midBackGMountainPos -= midBackGMountainSpeed;
+    forBackGMountainPos -= forBackGMountainSpeed;
+    
+    if (farBackGMountainPos <= -farBackGMountain.width) farBackGMountainPos = 0;
+    if (midBackGMountainPos <= -midBackGMountain.width) midBackGMountainPos = 0;
+    if (forBackGMountainPos <= -forBackGMountain.width) forBackGMountainPos = 0;
 
+    // Actualizar la posición de las nubes
+    for (int i = 0; i < MAX_CLOUDS; i++)
+    {
+        clouds[i].position.x -= clouds[i].speed;
 
-    if (scrollingBack >= farBackGMountain.width) scrollingBack = 0;
-    if (scrollingMid >= midBackGMountain.width) scrollingMid = 0;
-    if (scrollingFore >= forBackGMountain.width) scrollingFore = 0;
+        // Repetir la nube cuando llegue al final de la ventana
+        if (clouds[i].position.x <= -clouds[i].texture.width)
+        {
+            clouds[i].position.x = (float)SCREEN_WIDTH;
+            clouds[i].position.y = (float)(rand() % (SCREEN_HEIGHT - clouds[i].texture.height));
+            clouds[i].speed = (float)(rand() % 5 + 2);
+        }
+    }
 
     for (int i = 0; i < (SCREEN_WIDTH / SKY_WIDTH) + 1; i++) DrawTexture(skyBackGMountain, 0 + (i * SKY_WIDTH), 0, WHITE);
 
-    DrawTexture(farBackGMountain, scrollingBack, 125, WHITE);
-    //DrawTexture(farBackGMountain, scrollingBack + farBackGMountain.width, 125, WHITE);
+    DrawTexture(farBackGMountain, (int)farBackGMountainPos, 100, WHITE);
+    DrawTexture(farBackGMountain, (int)farBackGMountainPos + farBackGMountain.width, 100, WHITE);
 
-    DrawTexture(midBackGMountain, scrollingBack, 330, WHITE);
-    //DrawTexture(midBackGMountain, scrollingBack + midBackGMountain.width, 330, WHITE);
+    DrawTexture(midBackGMountain, (int)midBackGMountainPos, 280, WHITE);
+    DrawTexture(midBackGMountain, (int)midBackGMountainPos + midBackGMountain.width, 280, WHITE);
 
-    DrawTexture(forBackGMountain, scrollingBack, 400, WHITE);
-    //DrawTexture(forBackGMountain, scrollingBack + forBackGMountain.width, 400, WHITE);
+    DrawTexture(forBackGMountain, (int)forBackGMountainPos, 330, WHITE);
+    DrawTexture(forBackGMountain, (int)forBackGMountainPos + forBackGMountain.width, 330, WHITE);
+
+    for (int i = 0; i < MAX_CLOUDS; i++) {
+        DrawTextureEx(clouds[i].texture, { clouds[i].position.x, clouds[i].position.y }, 0.0f, 0.3f, WHITE);
+    }
 
 }
 
