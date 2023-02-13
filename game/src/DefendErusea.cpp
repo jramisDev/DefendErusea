@@ -2,133 +2,15 @@
 #include "screens.h"
 #include <iostream>
 #include <time.h>
+#include "clouds.h"
 #include "initDE.h"
-#include "Ship.h"
-#include "Enemy.h"
+#include "ship.h"
+#include "enemy.h"
 
-//Background
-Texture2D skyBackGMountain;
-Texture2D farBackGMountain;
-Texture2D midBackGMountain;
-Texture2D forBackGMountain;
-
-//Nubes
-Texture2D cloud;
-
-//Imagenes avión
-Texture2D greenPlane;
-Texture2D redPlane;
-
-//Enemigos
-Texture2D bombMove;
-Texture2D bombStatic;
-
-//Sonidos
-Sound damagedSound;
-Sound diedSound;
-
-//MovimientoBackground
-int scrollingBack = 0;
-int scrollingMid = 0;
-int scrollingFore = 0;
-
-//Posiciones
-Rectangle enemy2 = { 600, 100, 90, 35 };
-
-//Velocidad enemigo
-float enemy2Speed = 2.0f;
-
-class Ship {
-
-    short currentSpeed;
-    short health;
-
-    Texture2D img;
-
-    Vector2 currentPos;
-
-public:
-    Ship() {
-        currentSpeed = 10;
-        health = 100;
-        currentPos.x = 0;
-        currentPos.y = 100;
-        img = greenPlane;
-    };
-    Ship(short pCurrentSpeed, short pHealth, Texture2D pImg, Vector2 pCurrentPos) {
-        currentSpeed = pCurrentSpeed;
-        health = pHealth;
-        img = pImg;
-        currentPos = pCurrentPos;
-    }
-
-    short getCurrentSpeed() { return currentSpeed; }
-    void setCurrentSpeed(short pSpeed) { currentSpeed = pSpeed; };
-
-    short getHealth() { return health; }
-    void setHealth(short pDamage) { health = health - pDamage; };
-
-    Texture2D getImg() { return img; };
-    void setImg(Texture2D pImg) { img = pImg; };
-
-    Vector2 getCurrentPosition() { return currentPos; };
-    void setCurrentPosition(Vector2 pPosition) { currentPos = pPosition; }
-
-    void Move(Vector2 delta) {
-        currentPos.x = currentPos.x + (delta.x * currentSpeed);
-        currentPos.y = currentPos.y + (delta.y * currentSpeed);
-    }
-};
-
-class Enemy :public Ship {
-
-    short powerFire;
-    Rectangle rectColision;
-
-public:
-    Enemy() {};
-    Enemy(short pPowerFire, Rectangle pRectColision, Texture2D pImg, Vector2 pCurrentPosition, short pCurrentSpeed) {
-        powerFire = pPowerFire;
-        rectColision = pRectColision;
-        setImg(pImg);
-        setCurrentPosition(pCurrentPosition);
-        setCurrentSpeed(pCurrentSpeed);
-    }
-
-    short getPowerFire() { return powerFire; }
-    void setPowerFire(short pPowerFire) { powerFire = pPowerFire; }
-
-    Rectangle getRectColision() { return rectColision; }
-    void setRectColision(Rectangle pRectColision) { rectColision = pRectColision; };
-
-};
-
-//Inicializamos jugador y enemigos
+//Inicializamos los tipos de jugador y enemigos que queremos
 Ship playerPlane;
 Enemy enemyStatic = Enemy();
 Enemy enemyMove = Enemy();;
-
-int framesCounter = 0;
-Screens actualScreen = MENU;
-
-bool impacto = false;
-
-float farBackGMountainPos = 0.0f;
-float farBackGMountainSpeed = 2.0f;
-
-float midBackGMountainPos = 0.0f;
-float midBackGMountainSpeed = 2.0f;
-
-float forBackGMountainPos = 0.0f;
-float forBackGMountainSpeed = 2.0f;
-
-typedef struct Cloud {
-    Texture2D texture;
-    Vector2 position;
-    float speed;
-} Cloud;
-
-Cloud clouds[MAX_CLOUDS];
 
 int main() {
         
@@ -180,7 +62,7 @@ int main() {
 
                 if (playerPlane.getCurrentPosition().x > SCREEN_WIDTH - 150) {
                     actualScreen = WIN;
-                    playerPlane = Ship();
+                    playerPlane = Ship(10, 100, greenPlane, { 0,100 });
                 } 
 
             }break;
@@ -207,7 +89,6 @@ int main() {
 
         EndDrawing();
     }
-
 
     endApp();
 
@@ -288,15 +169,13 @@ bool checkCollisions() {
         //Colision player - enemigo
         Rectangle playerRect = { playerPlane.getCurrentPosition().x, playerPlane.getCurrentPosition().y + 20, 100, 30 };
 
-
-
         if (CheckCollisionRecs(playerRect, enemyStatic.getRectColision())) {
 
             playerPlane.setHealth(enemyStatic.getPowerFire());
             playerPlane.setImg(redPlane);
             impacto = true;
 
-            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+            if (!IsSoundPlaying(diedSound)) {
                 playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
             }
 
@@ -308,20 +187,18 @@ bool checkCollisions() {
             playerPlane.setImg(redPlane);
             impacto = true;
 
-            if (!IsSoundPlaying(damagedSound) && !IsSoundPlaying(diedSound)) {
+            if (!IsSoundPlaying(diedSound)) {
                 playerPlane.getHealth() <= 0 ? PlaySound(diedSound) : PlaySound(damagedSound);
             }
 
         }
-
-
 
         //FIN Colision player - enemigo
         framesCounter = 0;
 
         if (playerPlane.getHealth() <= 0) {
             actualScreen = GAMEOVER;
-            playerPlane = Ship();
+            playerPlane = Ship(10, 100, greenPlane, { 0,100 });
         }
     }
 
