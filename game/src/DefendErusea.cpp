@@ -1,28 +1,10 @@
 #include "raylib.h"
 #include "screens.h"
 #include <iostream>
-//#include "DefendErusea.h"
 #include <time.h>
-
-#define MAX_CLOUDS 2
-
-//FPS
-#define FPS 60
-
-//WindowScreen
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 400
-#define GAME_TITLE "Defend Erusea"
-
-#define SKY_WIDTH 14
-
-//Widget Health
-#define WIDGET_POS_X 10
-#define WIDGET_POS_Y 10
-#define WIDGET_HEIGHT 20
-#define WIDGET_WIDTH 100
-
-enum Screens {MENU, GAME, WIN, GAMEOVER};
+#include "initDE.h"
+#include "Ship.h"
+#include "Enemy.h"
 
 //Background
 Texture2D skyBackGMountain;
@@ -131,17 +113,6 @@ Screens actualScreen = MENU;
 
 bool impacto = false;
 
-static void initApp();
-static void endApp();
-static void generateWidgetHealth();
-static void setBackground();
-static void setMovementPlayer();
-static void setMovementEnemy();
-static bool checkCollisions();
-static void setDrawsObjets();
-static void setGenerateProgressionBar();
-static void endApp();
-
 float farBackGMountainPos = 0.0f;
 float farBackGMountainSpeed = 2.0f;
 
@@ -242,7 +213,6 @@ int main() {
 
     return 0;
 }
-
 
 void initApp() {
 
